@@ -8,7 +8,8 @@ DIMENSION = 400  # Dimension of the original data.
 CLASSES = (-1, +1)   # The classes that we are trying to predict.
 
 def transform(x_original):
-    return x_original
+	#returns homogeneous
+    return np.append(x_original, np.array([1]))
 
 if __name__ == "__main__":
     for line in sys.stdin:
