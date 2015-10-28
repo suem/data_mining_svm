@@ -18,15 +18,39 @@
 \renewcommand{\familydefault}{\sfdefault}
 
 \title{Data Mining: Learning from Large Data Sets - Fall Semester 2015}
-\author{member1@student.ethz.ch\\ member2@student.ethz.ch\\ member3@student.ethz.ch\\}
+\author{\{usamuel, adavison, kurmannn\}@student.ethz.ch}
 \date{\today}
 
 \begin{document}
 \maketitle
 
 \section*{Large Scale Image Classification} 
-Briefly describe the steps used to produce the solution. Feel free to add plots or screenshots if you think it's necessary. The report should contain a maximum of 2 pages.
-Keep in mind that you only have to submit one report per group. Please indicate the contribution of each group member to the project.
+
+\texttt{Briefly describe the steps used to produce the solution. Feel free to add plots or screenshots if you think it's necessary. The report should contain a maximum of 2 pages.
+Keep in mind that you only have to submit one report per group. Please indicate the contribution of each group member to the project.}
+
+\paragraph{Problem formulation.\!\!\!}
+The goal of this project was to use a SVM to classify a set of images into whether they are images of people, or images of nature. The images were provided in the form of pre-computed feature vectors. 
+
+\paragraph{Approach.\!\!\!}
+
+
+\paragraph{Mapper.\!\!\!}
+Performs the online svm using \emph{Stochastic Gradient Descent}. (passes sum of $w$ on to reducer)
+
+\paragraph{Reducer.\!\!\!}
+Creates a weighted average of the $w$ passed by the mappers.
+
+\paragraph{Learning lambda.\!\!\!}
+Cross validation
+
+\paragraph{Results.\!\!\!}
+
+
+\paragraph{Workload distribution.\!\!\!}
+
+
+
 \end{document} 
 
 %%% Local Variables:
