@@ -5,7 +5,7 @@ import sys
 import numpy as np
 
 DIM_ORIG = 400
-DIM_TRANS = 1500
+DIM_TRANS = 3500
 
 
 def print_array(a):
