@@ -1,3 +1,4 @@
+
 \documentclass[a4paper, 11pt]{article}
 \usepackage{graphicx}
 \usepackage{amsmath}
@@ -17,12 +18,14 @@
 
 \renewcommand{\familydefault}{\sfdefault}
 
-\title{Data Mining: Learning from Large Data Sets - Fall Semester 2015}
-\author{\{usamuel, adavison, kurmannn\}@student.ethz.ch}
+\title{Data Mining: Learning From Large Data Sets\\\vspace{2mm}\Large{Fall Semester 2015}}
+\author{\{usamuel, adavidso, kurmannn\}@student.ethz.ch}
 \date{\today}
 
 \begin{document}
 \maketitle
+\thispagestyle{empty}
+\pagestyle{empty}
 
 \section*{Large Scale Image Classification} 
 
@@ -30,51 +33,29 @@
 % Keep in mind that you only have to submit one report per group. Please indicate the contribution of each group member to the project.}
 
 \paragraph{Problem formulation.\!\!\!}
-The goal of this project was to use a SVM to classify a set of images into whether they are images of people, or images of nature. The images were provided in the form of pre-computed feature vectors. 
+The goal of this project was to construct an SVM that classifies images into one of two classes, these classes being images of people versus images of nature. The images were provided in the form of precomputed feature vectors, each containing $400$ features.
 
 \paragraph{Approach and Results.\!\!\!}
-We computed a classifier by running SGD on each mapper. All mappers read values $(y_t,x_t)$ for $1 <= t <= T$ and then
-compute $w_t$ using the SGD algorithm that was presented in the lecture. The final result of the mapper is the average of
-all $w_t$. The reducer collects all these values and averages them again to output the final classifier $w$.
-\\
+We constructed a classifier by running SGD in each mapper. Each mapper reads values $(y_t,x_t)$, for $1\leq t\leq T$, and then computes $w_t$ using the SGD algorithm, as presented in class. The final result of the mapper is the average of
+all $w_t$. The reducer collects and averages over these hyperplanes, and outputs the final classifier $w$.
 
 We tried several approaches to compute a good classifier for the image classification problem.
-\\
 
-At first, we used SGD to compute a linear classifier. The features were used "as is" with the addition of a constant $1$.
-We chose $\eta = 1/\sqrt(t)$ and settled for $\lambda = 1$. This approach yielded a score of $60$.
-\\
+At first, we used OCP to compute a linear classifier. The features were used ``as is" with the addition of a constant $1$ to account for an intercept. We chose $\eta_t=1/\sqrt{t}$ and $\lambda=1$. This approach yielded a score of about $60$ percent.
 
-To improve on this, we tried to process the feature vectors uniformely at random. 
-We adapted the mapper to first store the entire input in a maxtrix. 
-This matrix was then processd uniformely at random. To make the most of our computation time,
-we continuted reading from the matrix in random order until the timelimit is reached.
-In addition to that, we chose $\lambda = 1/T$ and $\eta = 1/(\lambda \cdot t)$. 
-This approach yielded a score of 70.
-\\
+To improve on this, we tried to process the feature vectors in random order, as is done in SGD. We adapted the mapper to first store the entire input in a matrix. This matrix was then processed uniformly at random. To make the most out of the available computation time, we kept on reading from the matrix in random order for around $4.5$ minutes. In addition, we chose $\lambda=1/N$, with $N$ being the number of feature vectors passed to the mapper, and $\eta= 1/(\lambda t)$. 
+This approach yielded a score of approximately 70 percent.
 
-We were not able to improve on this and therefore assumed that the feature space was not 
-linearely separable. Therefore we experimented with several non-linear transformations of the
-feature space. We were able to boost our score to 80 with the following transition using built in numpy
-functions: $f(x) := [numpy.sqrt(x)\ ;\ numpy.diff(x)\ ;\ numpy.gradient(x)]$
+We were not able to improve on this and therefore assumed that the feature vectors were not (sufficiently)
+linearly separable. We experimented with several non-linear feature transformations, and were able to boost our score to 81 percent with the following transformation, which uses built-in NumPy functions:
+\begin{equation*}
+\texttt{x <- [numpy.sqrt(x), numpy.diff(x), numpy.gradient(x)]}.
+\end{equation*}
+This might seem like an odd transformation, but the motivation for doing this was that the original feature vectors were sparse, and so we wanted to remove some of this sparsity, which is why we use \texttt{diff} and \texttt{gradient}.
 
-Finally we were able to beat the hard baseline by using random fourier features on top of our non-linear
-transformation $f(x)$ e.g. we took $f(x)$ as input and then computed the random fourier features $z(f(x))$ as shown in the lecture.
-This gave us a score of 84 (using 3500 dimensions).
-
+Finally, we were able to beat the hard baseline by using random Fourier features on top of the above transformed features. Sampling 3,500 of these resulted in a score of 84 percent. At this point in time, we noticed that the first entry in every original feature vector in the training set was zero, so we dropped this feature.
 
 \paragraph{Workload distribution.\!\!\!}
-
-Nico and Alexander wrote the initial structure for the mapper and reducer. 
-Samuel implemented the basic SGD algorithm. Alexander extended it to process samples
-uniformly at random and he also came up with the non-linear transition $f$. 
-Samuel implemented random fourier samples (with errors). 
-Alexander corrected the errors and applied the random fourier features to $f$.
-Everybody contributed to the final report.
+Nico and Alexander wrote the initial structure for the mapper and reducer. Samuel implemented the basic OCP algorithm. Alexander extended this to include SGD and he also came up with the non-linear transformations. Samuel implemented random Fourier features (with errors), and Alexander corrected the errors, which then resulted in our final mapper. Everybody contributed to the report.
 
 \end{document}
-
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: t
-%%% End:
